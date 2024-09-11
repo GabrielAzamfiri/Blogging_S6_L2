@@ -1,16 +1,20 @@
 package com.example.Blogging_S6_L2.entities;
 
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Entity
 public class BlogPost {
-    private int id;
+    @Id
+    @GeneratedValue
+    @Setter(AccessLevel.NONE)
+    private UUID id;
 
     private String categoria;
     private String titolo;
@@ -18,4 +22,16 @@ public class BlogPost {
     private String contenuto;
     private int tempoDiLettura;
 
+    @ManyToOne
+    @JoinColumn(name = "author")
+    private Autore autore;
+
+    public BlogPost(String categoria, String titolo, String cover, String contenuto, int tempoDiLettura, Autore autore) {
+        this.categoria = categoria;
+        this.titolo = titolo;
+        this.cover = cover;
+        this.contenuto = contenuto;
+        this.tempoDiLettura = tempoDiLettura;
+        this.autore = autore;
+    }
 }

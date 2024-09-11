@@ -1,47 +1,53 @@
 package com.example.Blogging_S6_L2.services;
 
+
 import com.example.Blogging_S6_L2.entities.Autore;
 import com.example.Blogging_S6_L2.entities.BlogPost;
+import com.example.Blogging_S6_L2.entities.BlogPostPayload;
 import com.example.Blogging_S6_L2.exceptions.NotFoundException;
+import com.example.Blogging_S6_L2.repositories.AutoreRepository;
+import com.example.Blogging_S6_L2.repositories.BlogPostRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+
+import java.util.UUID;
 
 @Service
 public class BlogPostService {
+    @Autowired
+    private BlogPostRepository  blogPostRepository;
+    @Autowired
+    private AutoreRepository autoreRepository;
 
-    private List<BlogPost> blogPostList = new ArrayList<>();
 
 
 
-    public List<BlogPost> findAll(){
-        return this.blogPostList;
+    public Page<BlogPost> findAll(int page, int size, String sortBy){
+        if(page > 100) page = 100;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return this.blogPostRepository.findAll(pageable);
     }
 
-    public BlogPost save(BlogPost blogPost){
-        Random randomId = new Random();
-        blogPost.setId(randomId.nextInt(1,1000000));
-        this.blogPostList.add(blogPost);
-        return blogPost;
+    public BlogPost save(BlogPostPayload blogPostPayload){
+
+        Autore autore = autoreRepository.findById(blogPostPayload.getAutore()).orElseThrow(() ->  new NotFoundException(blogPostPayload.getAutore()));
+        BlogPost blogPost = new BlogPost( blogPostPayload.getCategoria(), blogPostPayload.getTitolo(), blogPostPayload.getCover(), blogPostPayload.getContenuto(), blogPostPayload.getTempoDiLettura(), autore);
+        return this.blogPostRepository.save(blogPost);
     }
 
-    public BlogPost findById(int blogPostId){
-        BlogPost found = null;
-        for (BlogPost blogPost: this.blogPostList){
-            if (blogPost.getId() == blogPostId) {
-                found = blogPost;
-            }
-        }
-        if (found == null){
-            throw new NotFoundException(blogPostId);
-        }else{
-            return found;
-        }
+
+    public BlogPost findById(UUID blogPostId){
+        return this.blogPostRepository.findById(blogPostId).orElseThrow(() -> new NotFoundException(blogPostId));
+
     }
 
-    public BlogPost findByIdAndUpdate(int blogPostId, BlogPost updatedBlogPost){
+    public BlogPost findByIdAndUpdate(UUID  blogPostId, BlogPost updatedBlogPost){
         BlogPost found = findById(blogPostId);
 
         found.setCategoria(updatedBlogPost.getCategoria());
@@ -50,12 +56,11 @@ public class BlogPostService {
         found.setTitolo(updatedBlogPost.getTitolo());
         found.setTempoDiLettura(updatedBlogPost.getTempoDiLettura());
 
-        return found;
+        return this.blogPostRepository.save(found);
     }
 
-    public void findByIdAndDelete(int blogPostId){
+    public void findByIdAndDelete(UUID  blogPostId){
         BlogPost found = findById(blogPostId);
-
-        this.blogPostList.remove(found);
+        this.blogPostRepository.delete(found);
     }
 }
