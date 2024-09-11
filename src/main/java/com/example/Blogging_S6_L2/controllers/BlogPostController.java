@@ -1,6 +1,7 @@
 package com.example.Blogging_S6_L2.controllers;
 
 import com.example.Blogging_S6_L2.entities.BlogPost;
+import com.example.Blogging_S6_L2.entities.BlogPostPayload;
 import com.example.Blogging_S6_L2.services.BlogPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,8 +33,8 @@ public class BlogPostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // Serve per customizzare lo status code (CREATED --> 201)
-    private BlogPost createAuthor(@RequestBody BlogPost blogPostId){
-        return blogPostService.save(blogPostId);
+    private BlogPost createAuthor(@RequestBody BlogPostPayload blogPostPayloadId){
+        return blogPostService.save(blogPostPayloadId);
     }
 
     @PutMapping("/{blogPostId}")

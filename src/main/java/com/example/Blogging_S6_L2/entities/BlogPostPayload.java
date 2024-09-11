@@ -1,9 +1,5 @@
 package com.example.Blogging_S6_L2.entities;
-
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.*;
-
 import java.util.UUID;
 
 @Getter
