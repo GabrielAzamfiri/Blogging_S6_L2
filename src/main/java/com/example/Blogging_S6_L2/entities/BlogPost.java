@@ -1,8 +1,6 @@
 package com.example.Blogging_S6_L2.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,6 +11,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @ToString
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+//mi blocca il loop infinito ma stampa id in più non necessari (chiedere why a Riccardo)
+
 public class BlogPost {
     @Id
     @GeneratedValue

@@ -20,7 +20,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class BlogPostService {
@@ -33,12 +36,36 @@ public class BlogPostService {
 
 
 
-    public Page<BlogPost> findAll(int page, int size, String sortBy){
-        if(page > 100) page = 100;
+//    public Page<BlogPost> findAll(int page, int size, String sortBy){
+//        if(page > 100) page = 100;
+//
+//        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+//        Page<BlogPost> listaBlogPost=  this.blogPostRepository.findAll(pageable);
+//
+//        Page<BlogPostDTO> output = toDTO(listaBlogPost());
+//        return null;
+//    }
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        return this.blogPostRepository.findAll(pageable);
+    public List<BlogPostDTO> findAll(){
+//        if(page > 100) page = 100;
+//
+//        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        List<BlogPost> listaBlogPost=  this.blogPostRepository.findAll();
+
+        List<BlogPostDTO> output = toDTO(listaBlogPost);
+        return output;
     }
+    private List<BlogPostDTO> toDTO(List<BlogPost> listaBlogPost) {
+
+        List<BlogPostDTO> output =  listaBlogPost.stream().map(blogPost -> new BlogPostDTO(blogPost.getId(),blogPost.getCategoria(), blogPost.getTitolo(),
+                blogPost.getContenuto(), blogPost.getTempoDiLettura(),blogPost.getAutore().getId(),
+                new AutoreDTO(blogPost.getAutore().getNome(),blogPost.getAutore().getCognome(),
+                        blogPost.getAutore().getEmail(), blogPost.getAutore().getDataDiNascita()))).toList();
+
+        return output;
+
+    };
+
 
     public BlogPost save(BlogPostDTO blogPostPayload){
 
@@ -49,7 +76,6 @@ public class BlogPostService {
 
         return this.blogPostRepository.save(blogPost);
     }
-
 
     public BlogPost findById(UUID blogPostId){
         return this.blogPostRepository.findById(blogPostId).orElseThrow(() -> new NotFoundException(blogPostId));

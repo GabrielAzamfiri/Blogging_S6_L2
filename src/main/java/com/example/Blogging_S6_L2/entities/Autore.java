@@ -1,8 +1,6 @@
 package com.example.Blogging_S6_L2.entities;
 import com.example.Blogging_S6_L2.payloads.BlogPostDTO;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -19,6 +17,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @ToString
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+
 public class Autore {
     @Id
     @GeneratedValue
@@ -31,7 +31,7 @@ public class Autore {
     private LocalDate dataDiNascita;
     private String avatar;
     @OneToMany(mappedBy = "autore")
-    @JsonIgnore
+    //@JsonIgnore mi ignora il Json del autore bloccando il loop infinito ma non mi fa vedere la lista di post in postman
     private List<BlogPost> listaBlogPost;
 
     public Autore(String nome, String cognome, String email, LocalDate dataDiNascita, String avatar) {

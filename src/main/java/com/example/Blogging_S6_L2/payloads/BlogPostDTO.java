@@ -11,6 +11,10 @@ import java.util.UUID;
 public record BlogPostDTO(
         @NotEmpty(message = "La categoria è obbligatoria")
         @Size(min = 3, max = 40, message = "La categoria deve essere compresa tra 3 e 40 caratteri")
+        UUID id,
+
+        @NotEmpty(message = "La categoria è obbligatoria")
+        @Size(min = 3, max = 40, message = "La categoria deve essere compresa tra 3 e 40 caratteri")
         String categoria,
 
         @NotEmpty(message = "Il titolo è obbligatorio")
@@ -26,7 +30,10 @@ public record BlogPostDTO(
         int tempoDiLettura,
 
         @NotNull(message = "L'autore è obbligatorio")
-        UUID autore
+        UUID autore,
+
+        @NotNull(message = "L'autore è obbligatorio")
+        AutoreDTO autoreDto
         ) {
 
 }

@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -24,12 +25,22 @@ public class BlogPostController {
     @Autowired
     private BlogPostService blogPostService;
 
+//    @GetMapping() // Qua sto definendo il metodo HTTP da utilizzare per questo endpoint e l'ultima parte dell'URL
+//    // Per contattare questo endpoint dovrò mandare una richiesta GET a http://localhost:3001/authors
+//    public Page<BlogPost> getAll(@RequestParam(defaultValue = "0" ) int page,
+//                                 @RequestParam(defaultValue = "10") int size,
+//                                 @RequestParam(defaultValue = "id") String sortBy){
+//        Page<BlogPost> blogPost = blogPostService.findAll(page, size, sortBy);
+//        return blogPost;
+//    }
+
     @GetMapping() // Qua sto definendo il metodo HTTP da utilizzare per questo endpoint e l'ultima parte dell'URL
     // Per contattare questo endpoint dovrò mandare una richiesta GET a http://localhost:3001/authors
-    public Page<BlogPost> getAll(@RequestParam(defaultValue = "0" ) int page,
+    public List<BlogPostDTO> getAll(@RequestParam(defaultValue = "0" ) int page,
                                  @RequestParam(defaultValue = "10") int size,
                                  @RequestParam(defaultValue = "id") String sortBy){
-        return blogPostService.findAll(page, size, sortBy);
+        List<BlogPostDTO> blogPost = blogPostService.findAll();
+        return blogPost;
     }
 
     @GetMapping("/{blogPostId}")
