@@ -5,14 +5,17 @@ import com.example.Blogging_S6_L2.entities.Autore;
 import com.example.Blogging_S6_L2.exceptions.BadRequestException;
 import com.example.Blogging_S6_L2.payloads.AutoreDTO;
 import com.example.Blogging_S6_L2.services.AutoreService;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -64,5 +67,12 @@ public class AutoreController {
     @ResponseStatus(HttpStatus.NO_CONTENT) // Serve per customizzare lo status code (NO_CONTENT --> 204)
     private void findByIdAndDelete(@PathVariable UUID  authorId){
         autoreService.findByIdAndDelete(authorId);
+    }
+
+    @PostMapping("/{authorId}/avatar")
+    public void uploadAvatar(@RequestParam("avatar") MultipartFile image, @PathVariable UUID authorId) throws IOException {
+        // "avatar" deve corrispondere ESATTAMENTE come il campo del FormData che ci invia il Frontend
+        // Se non corrisponde non troverò il file
+        this.autoreService.uploadImage(image, authorId);
     }
 }

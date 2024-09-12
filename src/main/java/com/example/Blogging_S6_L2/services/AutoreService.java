@@ -1,5 +1,7 @@
 package com.example.Blogging_S6_L2.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.Blogging_S6_L2.entities.Autore;
 import com.example.Blogging_S6_L2.exceptions.BadRequestException;
 import com.example.Blogging_S6_L2.exceptions.NotFoundException;
@@ -11,16 +13,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 
-
+import java.io.IOException;
 import java.util.UUID;
 
 @Service
 public class AutoreService {
     @Autowired
     private AutoreRepository autoreRepository;
-
+    @Autowired
+    private Cloudinary cloudinaryUploader;
 
 
 
@@ -72,6 +76,16 @@ public class AutoreService {
     public void findByIdAndDelete(UUID autoreId){
         Autore found = this.findById(autoreId);
         this.autoreRepository.delete(found);
+    }
+
+    public Autore uploadImage(MultipartFile file , UUID authorId) throws IOException {
+        Autore autore = findById(authorId);
+        String url = (String) cloudinaryUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
+        System.out.println("URL: " + url);
+        autore.setAvatar(url);
+        // ... poi l'url lo salvo nel db per quello specifico utente
+        autoreRepository.save(autore);
+        return autore;
     }
 
 }
