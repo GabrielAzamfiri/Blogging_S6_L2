@@ -1,11 +1,17 @@
 package com.example.Blogging_S6_L2.entities;
+import com.example.Blogging_S6_L2.payloads.BlogPostDTO;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.*;
 
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -24,6 +30,9 @@ public class Autore {
     private String email;
     private LocalDate dataDiNascita;
     private String avatar;
+    @OneToMany(mappedBy = "autore")
+    @JsonIgnore
+    private List<BlogPost> listaBlogPost;
 
     public Autore(String nome, String cognome, String email, LocalDate dataDiNascita, String avatar) {
         this.nome = nome;

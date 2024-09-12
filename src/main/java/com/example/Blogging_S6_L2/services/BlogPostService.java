@@ -5,6 +5,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.example.Blogging_S6_L2.entities.Autore;
 import com.example.Blogging_S6_L2.entities.BlogPost;
+import com.example.Blogging_S6_L2.payloads.AutoreDTO;
 import com.example.Blogging_S6_L2.payloads.BlogPostDTO;
 import com.example.Blogging_S6_L2.exceptions.NotFoundException;
 import com.example.Blogging_S6_L2.repositories.AutoreRepository;
@@ -42,6 +43,7 @@ public class BlogPostService {
     public BlogPost save(BlogPostDTO blogPostPayload){
 
         Autore autore = autoreRepository.findById(blogPostPayload.autore()).orElseThrow(() ->  new NotFoundException(blogPostPayload.autore()));
+       // AutoreDTO autoreDTO= new AutoreDTO(autore.getNome(),autore.getCognome(),autore.getEmail(),autore.getDataDiNascita());
         BlogPost blogPost = new BlogPost( blogPostPayload.categoria(), blogPostPayload.titolo(),
                 "https://ui-avatars.com/api/?name="+blogPostPayload.categoria()+"+"+blogPostPayload.titolo(), blogPostPayload.contenuto(), blogPostPayload.tempoDiLettura(), autore);
 
