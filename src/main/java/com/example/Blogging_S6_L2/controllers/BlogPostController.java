@@ -1,15 +1,19 @@
 package com.example.Blogging_S6_L2.controllers;
 
 import com.example.Blogging_S6_L2.entities.BlogPost;
-import com.example.Blogging_S6_L2.entities.BlogPostPayload;
+import com.example.Blogging_S6_L2.payloads.BlogPostDTO;
+import com.example.Blogging_S6_L2.exceptions.BadRequestException;
 import com.example.Blogging_S6_L2.services.BlogPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController // Specializzazione di @Component, ci serve per definire una "collezione" di endpoints
 // Ogni endpoint sarà definito tramite un metodo di questa classe
@@ -33,8 +37,21 @@ public class BlogPostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // Serve per customizzare lo status code (CREATED --> 201)
-    private BlogPost createAuthor(@RequestBody BlogPostPayload blogPostPayloadId){
-        return blogPostService.save(blogPostPayloadId);
+    private BlogPost createAuthor(@RequestBody @Validated BlogPostDTO blogPostPayloadId, BindingResult validationResult){
+        // @Validated serve per 'attivare' le regole di validazione descritte nel DTO
+        // BindingResult mi permette di capire se ci sono stati errori e quali errori ci sono stati
+        if(validationResult.hasErrors())  {
+            // Se ci sono stati errori lanciamo un'eccezione custom
+            String messages = validationResult.getAllErrors().stream()
+                    .map(objectError -> objectError.getDefaultMessage())
+                    .collect(Collectors.joining(". "));
+
+            throw new BadRequestException("Ci sono stati errori nel payload. " + messages);
+        } else {
+            // Se non ci sono stati salviamo l'utente
+            return blogPostService.save(blogPostPayloadId);
+        }
+
     }
 
     @PutMapping("/{blogPostId}")

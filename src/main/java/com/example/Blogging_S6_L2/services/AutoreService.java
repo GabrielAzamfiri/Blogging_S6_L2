@@ -3,6 +3,7 @@ package com.example.Blogging_S6_L2.services;
 import com.example.Blogging_S6_L2.entities.Autore;
 import com.example.Blogging_S6_L2.exceptions.BadRequestException;
 import com.example.Blogging_S6_L2.exceptions.NotFoundException;
+import com.example.Blogging_S6_L2.payloads.AutoreDTO;
 import com.example.Blogging_S6_L2.repositories.AutoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,21 +32,20 @@ public class AutoreService {
         return this.autoreRepository.findAll(pageable);
     }
 
-    public Autore save(Autore autore){
+    public Autore save(AutoreDTO autore){
         // 1. Verifico che l'email non sia già stata utilizzata
-        this.autoreRepository.findByEmail(autore.getEmail()).ifPresent(
+        this.autoreRepository.findByEmail(autore.email()).ifPresent(
                 // 1.1 Se lo è triggero un errore (400 Bad Request)
                 author -> {
-                    throw new BadRequestException("L'email " + autore.getEmail() + " è già in uso!");
+                    throw new BadRequestException("L'email " + autore.email() + " è già in uso!");
                 }
         );
 
         // 2. Se tutto è ok procedo con l'aggiungere campi 'server-generated' (nel nostro caso avatarURL)
-        autore.setAvatar("https://ui-avatars.com/api/?name="+autore.getNome()+"+"+autore.getCognome());
+        Autore newAutore = new Autore(autore.nome(), autore.cognome(), autore.email(), autore.dataDiNascita(),"https://ui-avatars.com/api/?name="+autore.nome()+"+"+autore.cognome());
 
-        System.out.println("hello");
         // 3. Salvo lo User
-        return this.autoreRepository.save(autore);
+        return this.autoreRepository.save(newAutore);
     }
 
     public Autore findById(UUID autoreId){

@@ -3,7 +3,7 @@ package com.example.Blogging_S6_L2.services;
 
 import com.example.Blogging_S6_L2.entities.Autore;
 import com.example.Blogging_S6_L2.entities.BlogPost;
-import com.example.Blogging_S6_L2.entities.BlogPostPayload;
+import com.example.Blogging_S6_L2.payloads.BlogPostDTO;
 import com.example.Blogging_S6_L2.exceptions.NotFoundException;
 import com.example.Blogging_S6_L2.repositories.AutoreRepository;
 import com.example.Blogging_S6_L2.repositories.BlogPostRepository;
@@ -34,10 +34,12 @@ public class BlogPostService {
         return this.blogPostRepository.findAll(pageable);
     }
 
-    public BlogPost save(BlogPostPayload blogPostPayload){
+    public BlogPost save(BlogPostDTO blogPostPayload){
 
-        Autore autore = autoreRepository.findById(blogPostPayload.getAutore()).orElseThrow(() ->  new NotFoundException(blogPostPayload.getAutore()));
-        BlogPost blogPost = new BlogPost( blogPostPayload.getCategoria(), blogPostPayload.getTitolo(), blogPostPayload.getCover(), blogPostPayload.getContenuto(), blogPostPayload.getTempoDiLettura(), autore);
+        Autore autore = autoreRepository.findById(blogPostPayload.autore()).orElseThrow(() ->  new NotFoundException(blogPostPayload.autore()));
+        BlogPost blogPost = new BlogPost( blogPostPayload.categoria(), blogPostPayload.titolo(),
+                "https://ui-avatars.com/api/?name="+blogPostPayload.categoria()+"+"+blogPostPayload.titolo(), blogPostPayload.contenuto(), blogPostPayload.tempoDiLettura(), autore);
+
         return this.blogPostRepository.save(blogPost);
     }
 

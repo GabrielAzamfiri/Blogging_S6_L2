@@ -10,7 +10,6 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Entity
@@ -26,4 +25,11 @@ public class Autore {
     private LocalDate dataDiNascita;
     private String avatar;
 
+    public Autore(String nome, String cognome, String email, LocalDate dataDiNascita, String avatar) {
+        this.nome = nome;
+        this.cognome = cognome;
+        this.email = email;
+        this.dataDiNascita = dataDiNascita;
+        this.avatar = avatar;
+    }
 }
