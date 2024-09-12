@@ -70,9 +70,9 @@ public class AutoreController {
     }
 
     @PostMapping("/{authorId}/avatar")
-    public void uploadAvatar(@RequestParam("avatar") MultipartFile image, @PathVariable UUID authorId) throws IOException {
+    public Autore uploadAvatar(@RequestParam("avatar") MultipartFile image, @PathVariable UUID authorId) throws IOException {
         // "avatar" deve corrispondere ESATTAMENTE come il campo del FormData che ci invia il Frontend
         // Se non corrisponde non troverò il file
-        this.autoreService.uploadImage(image, authorId);
+       return  this.autoreService.uploadImage(image, authorId);
     }
 }

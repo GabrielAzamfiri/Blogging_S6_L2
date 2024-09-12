@@ -10,8 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -63,5 +65,12 @@ public class BlogPostController {
     @ResponseStatus(HttpStatus.NO_CONTENT) // Serve per customizzare lo status code (NO_CONTENT --> 204)
     private void findByIdAndDelete(@PathVariable UUID blogPostId){
         blogPostService.findByIdAndDelete(blogPostId);
+    }
+
+    @PostMapping("/{blogPostId}/cover")
+    public BlogPost uploadAvatar(@RequestParam("cover") MultipartFile image, @PathVariable UUID blogPostId) throws IOException {
+        // "avatar" deve corrispondere ESATTAMENTE come il campo del FormData che ci invia il Frontend
+        // Se non corrisponde non troverò il file
+        return  this.blogPostService.uploadImage(image, blogPostId);
     }
 }
